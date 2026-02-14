@@ -1,0 +1,44 @@
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
+
+
+class TeacherView(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Panel de Maestro - MVP")
+        self.resize(520, 320)
+
+        # Widget central
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+
+        # Layout
+        layout = QVBoxLayout(central_widget)
+
+        # Título
+        self.lbl_titulo = QLabel("Panel de Maestro", alignment=Qt.AlignCenter)
+        self.lbl_titulo.setStyleSheet("font-size: 20px; font-weight: bold; color: #2E7D32;")
+        layout.addWidget(self.lbl_titulo)
+
+        # Mensaje de bienvenida
+        self.lbl_welcome = QLabel("Bienvenido, maestro.", alignment=Qt.AlignCenter)
+        self.lbl_welcome.setStyleSheet("font-size: 16px; margin: 20px;")
+        layout.addWidget(self.lbl_welcome)
+
+        # Opciones de maestro
+        self.lbl_opciones = QLabel(
+            "Opciones disponibles:\n• Registrar calificaciones\n• Ver listas de clase\n• Subir material")
+        self.lbl_opciones.setAlignment(Qt.AlignCenter)
+        self.lbl_opciones.setStyleSheet(
+            "font-size: 14px; background-color: #f5f5f5; padding: 15px; border-radius: 5px;")
+        layout.addWidget(self.lbl_opciones)
+
+        # Botón de ejemplo
+        self.btn_cerrar = QPushButton("Cerrar Sesión")
+        self.btn_cerrar.setStyleSheet("background-color: #dc3545; color: white; padding: 8px; border-radius: 4px;")
+        layout.addWidget(self.btn_cerrar)
+
+        layout.addStretch(1)
+
+    def set_welcome(self, user: str):
+        self.lbl_welcome.setText(f"Bienvenido, {user}. ¡Has iniciado sesión como Maestro!")
