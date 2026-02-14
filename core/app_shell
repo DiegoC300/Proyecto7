@@ -1,0 +1,52 @@
+from PyQt5.QtWidgets import QStackedWidget
+from ui.login_view import LoginView
+from ui.main_view import AdminView  # Cambiado de MainView a AdminView
+from ui.student_view import StudentView
+from ui.teacher_view import TeacherView
+from services.auth_service import AuthService, UserRole
+from presenters.login_presenter import LoginPresenter
+
+
+class AppShell(QStackedWidget):
+    PAGE_LOGIN = 0
+    PAGE_ADMIN = 1
+    PAGE_STUDENT = 2
+    PAGE_TEACHER = 3
+
+    def __init__(self):
+        super().__init__()
+
+        self.login_view = LoginView()
+        self.admin_view = AdminView()
+        self.student_view = StudentView()
+        self.teacher_view = TeacherView()
+
+        self.auth_service = AuthService()
+
+        self.login_presenter = LoginPresenter(
+            view=self.login_view,
+            auth=self.auth_service,
+            on_success=self._go_to_role_view
+        )
+
+        # Agregar todas las vistas
+        self.addWidget(self.login_view)  # Índice 0
+        self.addWidget(self.admin_view)  # Índice 1
+        self.addWidget(self.student_view)  # Índice 2
+        self.addWidget(self.teacher_view)  # Índice 3
+
+        self.setCurrentIndex(self.PAGE_LOGIN)
+        self.setWindowTitle("PyQt5 - MVP con Roles")
+        self.resize(640, 400)
+
+    def _go_to_role_view(self, username: str, role: UserRole):
+
+        if role == UserRole.ADMIN:
+            self.admin_view.set_welcome(username)
+            self.setCurrentIndex(self.PAGE_ADMIN)
+        elif role == UserRole.ESTUDIANTE:
+            self.student_view.set_welcome(username)
+            self.setCurrentIndex(self.PAGE_STUDENT)
+        elif role == UserRole.MAESTRO:
+            self.teacher_view.set_welcome(username)
+            self.setCurrentIndex(self.PAGE_TEACHER)
