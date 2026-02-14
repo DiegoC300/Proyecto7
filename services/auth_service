@@ -1,0 +1,46 @@
+from dataclasses import dataclass
+from enum import Enum
+
+
+class UserRole(Enum):
+    ADMIN = "admin"
+    ESTUDIANTE = "estudiante"
+    MAESTRO = "maestro"
+
+
+@dataclass(frozen=True)
+class AuthResult:
+    ok: bool
+    message: str = ""
+    role: UserRole = None
+    username: str = ""
+
+
+class AuthService:
+
+    def __init__(self):
+        # Base de datos simulada de usuarios
+        self._users = {
+            "admin": {"password": "1234", "role": UserRole.ADMIN},
+            "estudiante": {"password": "1234", "role": UserRole.ESTUDIANTE},
+            "maestro": {"password": "1234", "role": UserRole.MAESTRO},
+            "juan": {"password": "1234", "role": UserRole.ESTUDIANTE},
+            "maria": {"password": "1234", "role": UserRole.MAESTRO},
+        }
+
+    def login(self, username: str, password: str) -> AuthResult:
+        if not username or not password:
+            return AuthResult(False, "Usuario y contraseña son requeridos.")
+
+        # Buscar usuario
+        user = self._users.get(username)
+
+        if user and user["password"] == password:
+            return AuthResult(
+                ok=True,
+                message=f"Bienvenido {username} ({user['role'].value})",
+                role=user["role"],
+                username=username
+            )
+
+        return AuthResult(False, "Usuario o contraseña incorrectos.")
